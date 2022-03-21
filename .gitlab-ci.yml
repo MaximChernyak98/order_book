@@ -1,0 +1,67 @@
+stages:
+  - tests
+  - reports
+  - deploy
+
+.rules: &TRIGGERS
+  - if: $CI_PIPELINE_SOURCE == "schedule" || $CI_PIPELINE_SOURCE == "trigger" ||
+      $CI_PIPELINE_SOURCE == "web"
+
+.before_script: &EVAL_VARIABLES
+  - |
+    if [[ -n ${DOMAIN} ]]; then
+      export DESTINATION="${DOMAIN}"
+    else
+      export DESTINATION="www.111.ru"
+    fi
+
+tests:
+  stage: tests
+  tags:
+    - server1 
+  rules: *TRIGGERS
+  allow_failure: true
+  before_script: *EVAL_VARIABLES
+  script:
+    - python3 -m venv env
+    - source env/bin/activate
+    - pip3 install -r requirements.txt
+    - pytest -v -s --ip_manual $DESTINATION tests/ --alluredir allure-results --color=yes
+  artifacts:
+    when: always
+    paths:
+      - allure-results
+    expire_in: 1 day
+
+reports:
+  stage: reports
+  tags:
+    - server1 
+  rules: *TRIGGERS
+  before_script: *EVAL_VARIABLES
+  script:
+    - allure generate -c ./allure-results -o ./allure-report
+    - du ./allure-results
+    - rm -rf ./allure-results
+  artifacts:
+    when: always
+    paths:
+      - ./allure-report
+    expire_in: 1 day
+
+deploy:
+  stage: deploy
+  tags:
+    - server1 
+  rules: *TRIGGERS
+  before_script: *EVAL_VARIABLES
+  script:
+    # - python3 -m venv env
+    # - source env/bin/activate
+    # - pip3 install requests
+    # - python utils/create_slack_message_from_allure.py
+    - mkdir public
+    - mv ./allure-report/* public
+  artifacts:
+    paths:
+      - public
