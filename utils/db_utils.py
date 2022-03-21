@@ -72,3 +72,15 @@ def delete_row_from_db_by_key(db_table_model: DeclarativeMeta, key_name: str, va
                 session.commit()
         except AttributeError as error:
             assert False, f'In DB table {db_table_model} not found key {key_name}'
+
+
+def get_all_rows_from_db_by_key(db_table_model: DeclarativeMeta, key_name: str, value: Union[str, int]) -> MainTable:
+    table_name = db_table_model.__tablename__
+    with allure.step(f'Getting all rows from DB {table_name} by key ---  {key_name}={value}'):
+        try:
+            with db_session() as session:
+                rows = session.query(db_table_model).filter(
+                    getattr(db_table_model, key_name) == value).all()
+                return rows
+        except AttributeError as error:
+            assert False, f'In DB-table {db_table_model} not found key {key_name}'
