@@ -42,6 +42,13 @@ def get_unique_row_from_db_by_key(db_table_model: DeclarativeMeta, key_name: str
             assert False, f'In DB-table {db_table_model} not found key {key_name}'
 
 
+def get_all_rows_from_db(db_table_model: DeclarativeMeta) -> MainTable:
+    table_name = db_table_model.__tablename__
+    with allure.step(f'Getting all data from DB {table_name}'):
+        with db_session() as session:
+            return session.query(db_table_model).all()
+
+
 def update_row_from_db_by_key(db_table_model: DeclarativeMeta,
                               key_name: str,
                               value: int,

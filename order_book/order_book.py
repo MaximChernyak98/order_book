@@ -51,7 +51,7 @@ class OrderBook():
 
     @staticmethod
     def sort_list_of_orders_for_order_book(db_rows: List[MainTable], bid_or_ask='bid') -> list:
-        sorted_orders = sorted(db_rows, key=lambda x: x.price, reverse=True)
+        sorted_orders = sorted(db_rows, key=lambda x: x.price, reverse=(bid_or_ask == 'bid'))
         result_list = []
         index = 0
 

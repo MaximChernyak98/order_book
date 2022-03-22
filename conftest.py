@@ -1,6 +1,6 @@
 import pytest
 
-pytest_plugins = ['fixtures.api_request', 'fixtures.parser']
+pytest_plugins = ['fixtures.api_request', 'fixtures.parser', 'fixtures.setups_teardowns']
 
 
 def pytest_addoption(parser):
