@@ -1,15 +1,29 @@
 
+from pprint import pprint
 from order_book.order import Order
 from order_book.order_book import OrderBook
 
 
-a = Order(order_type='bid', price=123, volume=1)
-c = [Order(order_type='ask', price=123, volume=1),
-     Order(order_type='bid', price=23, volume=2)]
+c = [
+    Order(order_type='bid', price=33, volume=1),
+    Order(order_type='bid', price=37, volume=1),
+    Order(order_type='bid', price=38, volume=1),
+    Order(order_type='bid', price=38, volume=1),
+    Order(order_type='bid', price=38, volume=1),
+    Order(order_type='bid', price=39, volume=1),
+    Order(order_type='bid', price=39, volume=1),
+    Order(order_type='bid', price=39, volume=1),
+    Order(order_type='bid', price=40, volume=1),
+    Order(order_type='ask', price=41, volume=1),
+    Order(order_type='ask', price=42, volume=1),
+    Order(order_type='ask', price=42, volume=1),
+    Order(order_type='ask', price=42, volume=1),
+    Order(order_type='ask', price=42, volume=1),
+    Order(order_type='ask', price=43, volume=1),
+    Order(order_type='ask', price=44, volume=1),
+    Order(order_type='ask', price=45, volume=1),
+]
 
-
-# b = OrderBook()
-# b.add_list_of_orders(order_list=a)
-# b.add_list_of_orders(order_list=c)
-b = OrderBook()
-print(b.update_order_volume(order_id=1, new_volume=22222))
+OrderBook.delete_all_order()
+OrderBook.add_list_of_orders(order_list=c)
+pprint(OrderBook.get_order_book_snapshot())
